@@ -24,8 +24,10 @@
   },
   "homepage": "https://github.com/Samuel-Ricardo/soft_socket#readme",
   "dependencies": {
-    "eslint": "^8.57.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0"
   }
 }

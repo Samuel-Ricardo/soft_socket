@@ -4,7 +4,11 @@
   "description": "Websocket Implementation",
   "main": "index.js",
   "scripts": {
-    "test": "npm run test"
+    "build": "tsc --build",
+    "start": "ts-node .",
+    "start:dev": "ts-node --watch .",
+    "test": "node --test .",
+    "test:dev": "node --test --watch ."
   },
   "repository": {
     "type": "git",

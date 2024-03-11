@@ -10,7 +10,8 @@
     "test": "node --test .",
     "test:dev": "node --test --watch .",
     "lint": "eslint ./src/** --fix --no-error-on-unmatched-pattern",
-    "format": "prettier --no-error-on-unmatched-pattern --write --check ./src/**"
+    "format": "prettier --no-error-on-unmatched-pattern --write --check ./src/**",
+    "husky:prepare": "husky install"
   },
   "repository": {
     "type": "git",

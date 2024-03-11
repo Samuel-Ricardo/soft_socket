@@ -1,0 +1,25 @@
+{
+  "name": "soft_socket",
+  "version": "1.0.0",
+  "description": "Websocket Implementation",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Samuel-Ricardo/soft_socket.git"
+  },
+  "keywords": [
+    "websocket"
+  ],
+  "author": "Samuel Ricardo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Samuel-Ricardo/soft_socket/issues"
+  },
+  "homepage": "https://github.com/Samuel-Ricardo/soft_socket#readme",
+  "dependencies": {
+    "typescript": "^5.4.2"
+  }
+}

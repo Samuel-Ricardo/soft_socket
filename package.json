@@ -9,7 +9,8 @@
     "start:dev": "ts-node --watch .",
     "test": "node --test .",
     "test:dev": "node --test --watch .",
-    "lint": "eslint ./src/** --fix --no-error-on-unmatched-pattern"
+    "lint": "eslint ./src/** --fix --no-error-on-unmatched-pattern",
+    "format": "prettier --no-error-on-unmatched-pattern --write --check ./src/**"
   },
   "repository": {
     "type": "git",

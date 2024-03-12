@@ -8,6 +8,8 @@ const SEVEN_BITS_INTEGER_MARKER = 125
 const SIXTEEN_BITS_INTEGER_MARKER = 126
 const SIXTYFOUR_BITS_INTEGER_MARKER = 127
 
+const MASK_KEY_BYTES_LENGTH = 4
+
 // parseInt('10000000', 2)
 const FIRST_BIT = 128
 
@@ -71,6 +73,21 @@ function onSocketReadable(socket: any) {
       `Your message is too big :( We don't handle 64-bits messages`,
     )
   }
+
+  const maskKey = socket.read(MASK_KEY_BYTES_LENGTH)
+  const encoded = socket.read(messageLength)
+  const decoded = unmask(encoded, maskKey)
+}
+
+function unmask(encodedBuffer: any[], maskKey: any[]) {
+  const finalBuffer = Buffer.from(encodedBuffer)
+
+  for (let index = 0; index < encodedBuffer.length; index++) {
+    //    finalBuffer[index] = encodedBuffer[index] ^ maskKey[index % MASK_KEY_BYTES_LENGTH]
+    finalBuffer[index] = encodedBuffer[index] ^ maskKey[index % 4]
+  }
+
+  return finalBuffer
 }
 
 process.on('uncaughtException', (error) => console.error(error))

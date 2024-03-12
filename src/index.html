@@ -16,21 +16,48 @@
 
         const id = Math.round(Math.random() * 1000)
         console.log('Sending...', { id })
-        const data = JSON.stringify({
-          id,
-          name: `[${id}] | Just Samuel`,
-          address: {
-            street: 'My Street',
-            number: 20 * id,
-          },
-          profession: 'developer',
-        })
-        socket.send(data)
+        const intervalId = setInterval(() => {
+          const data = JSON.stringify([
+            {
+              id,
+              name: `[${id}] Erick Wendel`,
+              address: {
+                street: 'my street',
+                number: 20 * id,
+              },
+              profession: 'developer',
+            },
+            {
+              id,
+              name: `[${id}] Jose da Silva`,
+              address: {
+                street: 'my street',
+                number: 20 * id,
+              },
+              profession: 'developer',
+            },
+            {
+              id,
+              name: `[${id}] Mary Santos`,
+              address: {
+                street: 'my street',
+                number: 20 * id,
+              },
+              profession: 'developer',
+            },
+          ])
+
+          socket.send(data)
+        }, 1000)
+
+        setTimeout(() => {
+          clearInterval(intervalId)
+        }, 5000)
       }
 
       socket.onmessage = (event) => {
         console.log({ event })
-        document.getElementById('messages').innerHTML = event.data
+        document.getElementById('messages').innerHTML += event.data
       }
 
       socket.onerror = (event) => console.error('Error on Connect', { event })

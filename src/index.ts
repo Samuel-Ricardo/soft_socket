@@ -8,6 +8,8 @@ const SEVEN_BITS_INTEGER_MARKER = 125
 const SIXTEEN_BITS_INTEGER_MARKER = 126
 const SIXTYFOUR_BITS_INTEGER_MARKER = 127
 
+const OPCODE_TEXT = 0x01 // 1 bit in binary 1
+
 const MASK_KEY_BYTES_LENGTH = 4
 
 // parseInt('10000000', 2)
@@ -54,6 +56,45 @@ function createSocketAccept(id: string) {
   return sha1.digest('base64')
 }
 
+function prepareMessage(message: string) {
+  const msg = Buffer.from(message)
+  const size = msg.length
+
+  let dataFrameBuffer
+
+  // 0x80 === 128 in binary
+  // '0x' + Math.abs(128).toString(16)
+  const firstByte = 0x80 | OPCODE_TEXT // single frame + utf8 text
+
+  if (size <= SEVEN_BITS_INTEGER_MARKER) {
+    const bytes = [firstByte]
+    dataFrameBuffer = Buffer.from(bytes.concat(size))
+  } else {
+    throw new Error('Message to long :(')
+  }
+
+  const totalLength = dataFrameBuffer.byteLength + size
+  const dataFrameResponse = concat([dataFrameBuffer, msg], totalLength)
+  return dataFrameResponse
+}
+
+function concat(bufferList: Buffer[], totalLength: number) {
+  const target = Buffer.allocUnsafe(totalLength)
+  let offSet = 0
+
+  for (const buffer of bufferList) {
+    target.set(buffer, offSet)
+    offSet += buffer.length
+  }
+
+  return target
+}
+
+function sendMessage(message: string, socket: any) {
+  prepareMessage(message)
+  socket.write(message)
+}
+
 function onSocketReadable(socket: any) {
   // consume optcode - [first byte]
   // 1º | 1 byte - 8bits
@@ -80,6 +121,12 @@ function onSocketReadable(socket: any) {
 
   const data = JSON.parse(decoded.toString('utf8'))
   console.log('Message Received!', { data })
+
+  const msg = JSON.stringify({
+    message: data,
+    at: new Date().toISOString(),
+  })
+  sendMessage(msg, socket)
 }
 
 function unmask(encodedBuffer: any[], maskKey: any[]) {

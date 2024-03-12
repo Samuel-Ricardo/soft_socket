@@ -91,8 +91,8 @@ function concat(bufferList: Buffer[], totalLength: number) {
 }
 
 function sendMessage(message: string, socket: any) {
-  prepareMessage(message)
-  socket.write(message)
+  const dataFrame = prepareMessage(message)
+  socket.write(dataFrame)
 }
 
 function onSocketReadable(socket: any) {
@@ -122,10 +122,7 @@ function onSocketReadable(socket: any) {
   const data = JSON.parse(decoded.toString('utf8'))
   console.log('Message Received!', { data })
 
-  const msg = JSON.stringify({
-    message: data,
-    at: new Date().toISOString(),
-  })
+  const msg = JSON.stringify(data)
   sendMessage(msg, socket)
 }
 

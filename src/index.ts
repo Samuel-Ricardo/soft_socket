@@ -77,14 +77,43 @@ function onSocketReadable(socket: any) {
   const maskKey = socket.read(MASK_KEY_BYTES_LENGTH)
   const encoded = socket.read(messageLength)
   const decoded = unmask(encoded, maskKey)
+
+  const data = JSON.parse(decoded.toString('utf8'))
+  console.log('Message Received!', { data })
 }
 
 function unmask(encodedBuffer: any[], maskKey: any[]) {
   const finalBuffer = Buffer.from(encodedBuffer)
 
+  const fillWithEightZeros = (t: any) => t.padStart(8, '0')
+  const toBinary = (t: any) => fillWithEightZeros(t.toString(2))
+  const fromBinaryToDecimal = (t: any) => parseInt(toBinary(t), 2)
+  const getCharFromBinary = (t: any) =>
+    String.fromCharCode(fromBinaryToDecimal(t))
+
+  // because the maskKey has only 4 bytes
+  // index % 4 === 0, 1, 2, 3 = index bits needed to decode the message
+
+  // XOR  ^
+  // returns 1 if both are different
+  // returns 0 if both are equal
+
+  // (71).toString(2).padStart(8, "0") = 0 1 0 0 0 1 1 1
+  // (53).toString(2).padStart(8, "0") = 0 0 1 1 0 1 0 1
+  //                                     0 1 1 1 0 0 1 0
+
+  // (71 ^ 53).toString(2).padStart(8, "0") = '01110010'
+  // String.fromCharCode(parseInt('01110010', 2))
+
   for (let index = 0; index < encodedBuffer.length; index++) {
-    //    finalBuffer[index] = encodedBuffer[index] ^ maskKey[index % MASK_KEY_BYTES_LENGTH]
-    finalBuffer[index] = encodedBuffer[index] ^ maskKey[index % 4]
+    finalBuffer[index] =
+      encodedBuffer[index] ^ maskKey[index % MASK_KEY_BYTES_LENGTH]
+
+    const logger = {
+      unmaskingCalc: `${toBinary(encodedBuffer[index])} ^ ${toBinary(maskKey[index % MASK_KEY_BYTES_LENGTH])} = ${toBinary(finalBuffer[index])}`,
+      decoded: getCharFromBinary(finalBuffer[index]),
+    }
+    console.log(logger)
   }
 
   return finalBuffer

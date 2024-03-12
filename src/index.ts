@@ -7,3 +7,6 @@ createServer((request, response) => {
 }).listen(PORT, () =>
   console.log(`Server running at http://localhost:${PORT}/`),
 )
+
+process.on('uncaughtException', (error) => console.error(error))
+process.on('unhandledRejection', (error) => console.error(error))

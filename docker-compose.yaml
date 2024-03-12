@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  soft_socket:
+    build: .
+    command: ['npm', 'run', 'start:dev']
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/home/node/app
+    external_links:
+      - 'host.docker.internal'
